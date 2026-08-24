@@ -1,0 +1,6 @@
+app:
+  security:
+    jwt:
+      secret: test-only-jwt-secret-with-more-than-32-characters
+      issuer: autotest-ai-test
+      expiration: PT15M

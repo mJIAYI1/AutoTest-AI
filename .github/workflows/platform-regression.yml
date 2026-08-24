@@ -1,0 +1,61 @@
+name: Platform regression
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Deployed AutoTest AI backend URL
+        required: true
+        default: http://127.0.0.1:18080
+      project_id:
+        description: Project ID
+        required: true
+      suite_id:
+        description: Test suite ID
+        required: true
+      environment_id:
+        description: Environment ID
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  run-suite:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger suite and wait for completion
+        env:
+          AUTOTEST_TOKEN: ${{ secrets.AUTOTEST_TOKEN }}
+          BASE_URL: ${{ inputs.base_url }}
+          PROJECT_ID: ${{ inputs.project_id }}
+          SUITE_ID: ${{ inputs.suite_id }}
+          ENVIRONMENT_ID: ${{ inputs.environment_id }}
+        run: |
+          test -n "$AUTOTEST_TOKEN"
+          response=$(curl --fail --silent --show-error \
+            -X POST "$BASE_URL/api/projects/$PROJECT_ID/test-suites/$SUITE_ID/runs" \
+            -H "Authorization: Bearer $AUTOTEST_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "{\"environmentId\":$ENVIRONMENT_ID}")
+          run_id=$(jq -er '.id' <<<"$response")
+
+          for attempt in $(seq 1 60); do
+            result=$(curl --fail --silent --show-error \
+              "$BASE_URL/api/projects/$PROJECT_ID/test-runs/$run_id" \
+              -H "Authorization: Bearer $AUTOTEST_TOKEN")
+            status=$(jq -r '.status' <<<"$result")
+            echo "Attempt $attempt: run $run_id is $status"
+            if [[ "$status" == "PASS" ]]; then
+              jq . <<<"$result"
+              exit 0
+            fi
+            if [[ "$status" == "FAIL" || "$status" == "ERROR" ]]; then
+              jq . <<<"$result"
+              exit 1
+            fi
+            sleep 5
+          done
+
+          echo "Timed out waiting for run $run_id"
+          exit 1

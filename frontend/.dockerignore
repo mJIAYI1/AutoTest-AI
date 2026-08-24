@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.ui-smoke-*.png
+npm-debug.log*

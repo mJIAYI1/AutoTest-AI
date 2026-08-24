@@ -1,0 +1,23 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+
+# Java / Maven
+**/target/
+.m2/
+*.log
+
+# Frontend
+**/node_modules/
+**/dist/
+.npm-cache/
+frontend/.ui-smoke-*.png
+.tools/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

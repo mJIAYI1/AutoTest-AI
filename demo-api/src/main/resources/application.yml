@@ -1,0 +1,25 @@
+server:
+  port: ${DEMO_API_SERVER_PORT:8081}
+  shutdown: graceful
+
+spring:
+  application:
+    name: autotest-ai-demo-api
+  lifecycle:
+    timeout-per-shutdown-phase: 10s
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never
