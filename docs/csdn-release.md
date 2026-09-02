@@ -1,6 +1,7 @@
 # 从零实现一个 AI API 自动化测试平台：Java 17 + Vue 3 + Docker Compose + 硅基流动
 
-> 项目源码：https://github.com/mJIAYI1/AutoTest-AI  
+> 项目源码：https://github.com/mJIAYI1/AutoTest-AI
+>
 > 技术栈：Java 17、Spring Boot 3.5、Vue 3、TypeScript、MySQL、Docker Compose、硅基流动
 
 做接口测试时，我们经常会在多个工具之间来回切换：用 Swagger 看接口、用 Postman 调请求、在 Excel 里维护用例、再手工整理测试报告。接口数量一多，环境变量、前后置依赖和历史结果就很难统一管理。
